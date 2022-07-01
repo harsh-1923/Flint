@@ -1,0 +1,22 @@
+.message-img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.message-disp-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  margin-bottom: 10px;
+  /* background-color: var(--accent); */
+  /* justify-content: flex-start; */
+}
+
+.message-right {
+  padding: 10px;
+  margin: 0px 10px;
+  border-radius: 10px;
+  max-width: 60%;
+}

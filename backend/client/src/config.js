@@ -1,0 +1,1 @@
+export const API = "https://flint-app.herokuapp.com/api"

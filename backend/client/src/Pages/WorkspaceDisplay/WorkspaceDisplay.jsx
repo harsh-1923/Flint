@@ -1,0 +1,816 @@
+import React, { useEffect, useState, useContext } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Slide, Fade, Zoom } from "react-awesome-reveal";
+import "./WorkspaceDisplay.css";
+
+import WorkspaceServices from "../../Services/WorkspaceServices";
+import MessageDisp from "../../Components/MessageDisp/MessageDisp";
+
+import Avatar from "../../Components/Avatar/Avatar.jsx";
+import A_ONE from "../../assets/A_ONE.png";
+
+import { AuthContext } from "../../Context/AuthContext.js";
+import NoteDisp from "../../Components//NoteDisp/NoteDisp.jsx";
+
+const WorkspaceDisplay = () => {
+  let { uID } = useParams();
+  const navigate = useNavigate();
+  const loaded = true;
+
+  const authContext = useContext(AuthContext);
+  // console.log(authContext.user.link);
+
+  const [workspace, setWorkspaces] = useState();
+  const [notes, setNotes] = useState();
+  const [links, setLinks] = useState();
+  const [todo, setTodo] = useState();
+  const [collaborators, setCollaborators] = useState();
+  const [messages, setMessages] = useState();
+  const [newMessages, setNewMessages] = useState(null);
+  const [collVis, setCollVis] = useState(false);
+
+  const [section, setSection] = useState(0);
+
+  useEffect(() => {
+    getAllNotes();
+    getAllLinks();
+    getAllTodo();
+    getAllCollaborators();
+    getAllMessages();
+    getAllWorkspaces();
+  }, [loaded]);
+
+  const getAllWorkspaces = () => {
+    const data = { uID };
+
+    WorkspaceServices.getAllWSFromUID(data).then((t) => {
+      setWorkspaces(t.data[0]);
+      // console.log(data);
+      // console.log(t.data[0], "Workspace");
+      // console.log(workspace);
+    });
+  };
+
+  const getAllMessages = () => {
+    const data = { workspaceID: uID };
+    WorkspaceServices.getAllMessages(data).then((data) => {
+      setMessages(data.data);
+    });
+  };
+
+  const getAllCollaborators = () => {
+    const data = { workspaceID: uID };
+    WorkspaceServices.getAllCollaborators(data).then((colls) => {
+      setCollaborators(colls.data);
+    });
+  };
+
+  const getAllNotes = () => {
+    const data = { workspaceID: uID };
+    WorkspaceServices.getAllNotes(data).then((notes) => {
+      setNotes(notes.data);
+    });
+  };
+
+  const getAllLinks = () => {
+    const data = { workspaceID: uID };
+    WorkspaceServices.getAllLinks(data).then((links) => {
+      setLinks(links.data);
+    });
+  };
+
+  const getAllTodo = () => {
+    const data = { workspaceID: uID };
+    WorkspaceServices.getAllTodo(data).then((todo) => {
+      setTodo(todo.data);
+    });
+  };
+
+  const addCollaborator = () => {
+    // console.log(authContext.user, "user");
+    const data = {
+      workspaceID: uID,
+      email: authContext.user.email,
+      url: authContext.user.link,
+      name: authContext.user.name,
+    };
+
+    // console.log(data, "data");
+  };
+
+  // console.log(authContext.user, "authcontext");
+  // console.log(collaborators, "collabprators");
+
+  return (
+    <div className="wsd-wrapper">
+      <div className="wsd-containers">
+        <div className="wsd-container-left">
+          <Slide left>
+            <div className="wsd-ws-title-wrapper">
+              <p className="ws-logo-bold pointer">
+                {workspace ? workspace.title : "Flint"}
+              </p>
+              <p className="ws-logo-tag">Workspace</p>
+            </div>
+          </Slide>
+
+          <Slide cascade={false} duration={2000}>
+            <div className="tqt">
+              <div
+                className="ws-options pointer"
+                onClick={() => navigate("/userhome")}
+              >
+                <div className="ws-options-icon">
+                  <svg
+                    stroke="#1b72e8"
+                    fill="#1b72e8"
+                    strokeWidth="0"
+                    viewBox="0 0 24 24"
+                    height="1.3em"
+                    width="1.3em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g>
+                      <path fill="none" d="M0 0h24v24H0z"></path>
+                      <path d="M13 21V11h8v10h-8zM3 13V3h8v10H3zm6-2V5H5v6h4zM3 21v-6h8v6H3zm2-2h4v-2H5v2zm10 0h4v-6h-4v6zM13 3h8v6h-8V3zm2 2v2h4V5h-4z"></path>
+                    </g>
+                  </svg>
+                </div>
+                <div className="ws-options-text">Dashboard</div>
+              </div>
+
+              <div
+                className="ws-options pointer"
+                onClick={() => {
+                  setSection(1);
+                  getAllNotes();
+                }}
+              >
+                <div className="ws-options-icon">
+                  <svg
+                    className="icon"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeWidth="0"
+                    viewBox="0 0 24 24"
+                    height="1.2em"
+                    width="1.2em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M6 6C6 5.44772 6.44772 5 7 5H17C17.5523 5 18 5.44772 18 6C18 6.55228 17.5523 7 17 7H7C6.44771 7 6 6.55228 6 6Z"
+                      fill="currentColor"
+                    ></path>
+                    <path
+                      d="M6 10C6 9.44771 6.44772 9 7 9H17C17.5523 9 18 9.44771 18 10C18 10.5523 17.5523 11 17 11H7C6.44771 11 6 10.5523 6 10Z"
+                      fill="currentColor"
+                    ></path>
+                    <path
+                      d="M7 13C6.44772 13 6 13.4477 6 14C6 14.5523 6.44771 15 7 15H17C17.5523 15 18 14.5523 18 14C18 13.4477 17.5523 13 17 13H7Z"
+                      fill="currentColor"
+                    ></path>
+                    <path
+                      d="M6 18C6 17.4477 6.44772 17 7 17H11C11.5523 17 12 17.4477 12 18C12 18.5523 11.5523 19 11 19H7C6.44772 19 6 18.5523 6 18Z"
+                      fill="currentColor"
+                    ></path>
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M2 4C2 2.34315 3.34315 1 5 1H19C20.6569 1 22 2.34315 22 4V20C22 21.6569 20.6569 23 19 23H5C3.34315 23 2 21.6569 2 20V4ZM5 3H19C19.5523 3 20 3.44771 20 4V20C20 20.5523 19.5523 21 19 21H5C4.44772 21 4 20.5523 4 20V4C4 3.44772 4.44771 3 5 3Z"
+                      fill="currentColor"
+                    ></path>
+                  </svg>
+                </div>
+                <div className="ws-options-text">All Notes</div>
+              </div>
+
+              <div
+                className="ws-options pointer"
+                onClick={() => {
+                  setSection(2);
+                  getAllTodo();
+                }}
+              >
+                <div className="ws-options-icon">
+                  <svg
+                    className="icon"
+                    stroke="#1b72e8"
+                    fill="#1b72e8"
+                    strokeWidth="0"
+                    viewBox="0 0 24 24"
+                    height="1.2em"
+                    width="1.2em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g>
+                      <path fill="none" d="M0 0h24v24H0z"></path>
+                      <path d="M2 3h20v2H2V3zm2 4h16v2H4V7zm4 4h14v2H8v-2zm2 4h8v2h-8v-2zm-2 4h6v2H8v-2z"></path>
+                    </g>
+                  </svg>
+                </div>
+                <div className="ws-options-text">All Tasks</div>
+              </div>
+
+              <div
+                className="ws-options pointer"
+                onClick={() => {
+                  setSection(3);
+                  getAllLinks();
+                }}
+              >
+                <div className="ws-options-icon">
+                  <svg
+                    className="icon"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeWidth="0"
+                    viewBox="0 0 24 24"
+                    height="1.2em"
+                    width="1.2em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M14.8284 12L16.2426 13.4142L19.071 10.5858C20.6331 9.02365 20.6331 6.49099 19.071 4.9289C17.509 3.3668 14.9763 3.3668 13.4142 4.9289L10.5858 7.75732L12 9.17154L14.8284 6.34311C15.6095 5.56206 16.8758 5.56206 17.6568 6.34311C18.4379 7.12416 18.4379 8.39049 17.6568 9.17154L14.8284 12Z"
+                      fill="currentColor"
+                    ></path>
+                    <path
+                      d="M12 14.8285L13.4142 16.2427L10.5858 19.0711C9.02372 20.6332 6.49106 20.6332 4.92896 19.0711C3.36686 17.509 3.36686 14.9764 4.92896 13.4143L7.75739 10.5858L9.1716 12L6.34317 14.8285C5.56212 15.6095 5.56212 16.8758 6.34317 17.6569C7.12422 18.4379 8.39055 18.4379 9.1716 17.6569L12 14.8285Z"
+                      fill="currentColor"
+                    ></path>
+                    <path
+                      d="M14.8285 10.5857C15.219 10.1952 15.219 9.56199 14.8285 9.17147C14.4379 8.78094 13.8048 8.78094 13.4142 9.17147L9.1716 13.4141C8.78107 13.8046 8.78107 14.4378 9.1716 14.8283C9.56212 15.2188 10.1953 15.2188 10.5858 14.8283L14.8285 10.5857Z"
+                      fill="currentColor"
+                    ></path>
+                  </svg>
+                </div>
+                <div className="ws-options-text">All Links</div>
+              </div>
+              <div
+                style={{ marginTop: "300px" }}
+                className="ws-options pointer"
+                onClick={() => navigate("/contact")}
+              >
+                <div className="ws-options-icon">
+                  <svg
+                    className="icon"
+                    stroke="currentColor"
+                    fill="currentColor"
+                    strokeWidth="0"
+                    viewBox="0 0 24 24"
+                    height="1.3em"
+                    width="1.3em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g>
+                      <path fill="none" d="M0 0h24v24H0z"></path>
+                      <path d="M8 12h2v2H4v-2h2a6 6 0 1 1 6 6v-2a4 4 0 1 0-4-4zm-2 8h9v2H6v-2zm-4-4h8v2H2v-2zm9-15h2v3h-2V1zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3z"></path>
+                    </g>
+                  </svg>
+                </div>
+                <div className="ws-options-text">Help</div>
+              </div>
+
+              <div className="ws-options pointer" onClick={() => setSection(3)}>
+                <div className="ws-options-icon">
+                  <svg
+                    className="icon"
+                    stroke="currentColor"
+                    fill="currentColor"
+                    strokeWidth="0"
+                    viewBox="0 0 24 24"
+                    height="1.2em"
+                    width="1.2em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M16,2H8C4.691,2,2,4.691,2,8v13c0,0.553,0.447,1,1,1h13c3.309,0,6-2.691,6-6V8C22,4.691,19.309,2,16,2z M20,16 c0,2.206-1.794,4-4,4H4V8c0-2.206,1.794-4,4-4h8c2.206,0,4,1.794,4,4V16z"></path>
+                    <path d="M11 6H13V14H11zM11 16H13V18H11z"></path>
+                  </svg>
+                </div>
+                <div className="ws-options-text">Report an issue</div>
+              </div>
+              <div
+                className="ws-options pointer"
+                onClick={() => setCollVis(!collVis)}
+              >
+                <div className="ws-options-icon">
+                  <svg
+                    className="icon"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeWidth="0"
+                    viewBox="0 0 24 24"
+                    height="1.3em"
+                    width="1.3em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                    ></path>
+                  </svg>
+                </div>
+                <div className="ws-options-text">Toggle Collaborator</div>
+              </div>
+            </div>
+          </Slide>
+        </div>
+
+        {/* MID SECTION  */}
+        <div className="wsd-container-mid">
+          <Slide direction={"down"} duration={1000} triggerOnce>
+            <div className="wsd-mobile-options">
+              <div
+                className="ws-options pointer"
+                onClick={() => navigate("/userhome")}
+              >
+                <div className="ws-options-icon">
+                  <svg
+                    stroke="#1b72e8"
+                    fill="#1b72e8"
+                    strokeWidth="0"
+                    viewBox="0 0 24 24"
+                    height="1.3em"
+                    width="1.3em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g>
+                      <path fill="none" d="M0 0h24v24H0z"></path>
+                      <path d="M13 21V11h8v10h-8zM3 13V3h8v10H3zm6-2V5H5v6h4zM3 21v-6h8v6H3zm2-2h4v-2H5v2zm10 0h4v-6h-4v6zM13 3h8v6h-8V3zm2 2v2h4V5h-4z"></path>
+                    </g>
+                  </svg>
+                </div>
+                <div className="ws-options-text mobile-option">Dashboard</div>
+              </div>
+
+              <div
+                className="ws-options pointer"
+                onClick={() => {
+                  setSection(1);
+                  getAllNotes();
+                }}
+              >
+                <div className="ws-options-icon">
+                  <svg
+                    className="icon"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeWidth="0"
+                    viewBox="0 0 24 24"
+                    height="1.2em"
+                    width="1.2em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M6 6C6 5.44772 6.44772 5 7 5H17C17.5523 5 18 5.44772 18 6C18 6.55228 17.5523 7 17 7H7C6.44771 7 6 6.55228 6 6Z"
+                      fill="currentColor"
+                    ></path>
+                    <path
+                      d="M6 10C6 9.44771 6.44772 9 7 9H17C17.5523 9 18 9.44771 18 10C18 10.5523 17.5523 11 17 11H7C6.44771 11 6 10.5523 6 10Z"
+                      fill="currentColor"
+                    ></path>
+                    <path
+                      d="M7 13C6.44772 13 6 13.4477 6 14C6 14.5523 6.44771 15 7 15H17C17.5523 15 18 14.5523 18 14C18 13.4477 17.5523 13 17 13H7Z"
+                      fill="currentColor"
+                    ></path>
+                    <path
+                      d="M6 18C6 17.4477 6.44772 17 7 17H11C11.5523 17 12 17.4477 12 18C12 18.5523 11.5523 19 11 19H7C6.44772 19 6 18.5523 6 18Z"
+                      fill="currentColor"
+                    ></path>
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M2 4C2 2.34315 3.34315 1 5 1H19C20.6569 1 22 2.34315 22 4V20C22 21.6569 20.6569 23 19 23H5C3.34315 23 2 21.6569 2 20V4ZM5 3H19C19.5523 3 20 3.44771 20 4V20C20 20.5523 19.5523 21 19 21H5C4.44772 21 4 20.5523 4 20V4C4 3.44772 4.44771 3 5 3Z"
+                      fill="currentColor"
+                    ></path>
+                  </svg>
+                </div>
+                <div className="ws-options-text mobile-option">All Notes</div>
+              </div>
+
+              <div
+                className="ws-options pointer"
+                onClick={() => {
+                  setSection(2);
+                  getAllTodo();
+                }}
+              >
+                <div className="ws-options-icon">
+                  <svg
+                    className="icon"
+                    stroke="#1b72e8"
+                    fill="#1b72e8"
+                    strokeWidth="0"
+                    viewBox="0 0 24 24"
+                    height="1.2em"
+                    width="1.2em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g>
+                      <path fill="none" d="M0 0h24v24H0z"></path>
+                      <path d="M2 3h20v2H2V3zm2 4h16v2H4V7zm4 4h14v2H8v-2zm2 4h8v2h-8v-2zm-2 4h6v2H8v-2z"></path>
+                    </g>
+                  </svg>
+                </div>
+                <div className="ws-options-text mobile-option">All Tasks</div>
+              </div>
+
+              <div
+                className="ws-options pointer"
+                onClick={() => {
+                  setSection(3);
+                  getAllLinks();
+                }}
+              >
+                <div className="ws-options-icon">
+                  <svg
+                    className="icon"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeWidth="0"
+                    viewBox="0 0 24 24"
+                    height="1.2em"
+                    width="1.2em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M14.8284 12L16.2426 13.4142L19.071 10.5858C20.6331 9.02365 20.6331 6.49099 19.071 4.9289C17.509 3.3668 14.9763 3.3668 13.4142 4.9289L10.5858 7.75732L12 9.17154L14.8284 6.34311C15.6095 5.56206 16.8758 5.56206 17.6568 6.34311C18.4379 7.12416 18.4379 8.39049 17.6568 9.17154L14.8284 12Z"
+                      fill="currentColor"
+                    ></path>
+                    <path
+                      d="M12 14.8285L13.4142 16.2427L10.5858 19.0711C9.02372 20.6332 6.49106 20.6332 4.92896 19.0711C3.36686 17.509 3.36686 14.9764 4.92896 13.4143L7.75739 10.5858L9.1716 12L6.34317 14.8285C5.56212 15.6095 5.56212 16.8758 6.34317 17.6569C7.12422 18.4379 8.39055 18.4379 9.1716 17.6569L12 14.8285Z"
+                      fill="currentColor"
+                    ></path>
+                    <path
+                      d="M14.8285 10.5857C15.219 10.1952 15.219 9.56199 14.8285 9.17147C14.4379 8.78094 13.8048 8.78094 13.4142 9.17147L9.1716 13.4141C8.78107 13.8046 8.78107 14.4378 9.1716 14.8283C9.56212 15.2188 10.1953 15.2188 10.5858 14.8283L14.8285 10.5857Z"
+                      fill="currentColor"
+                    ></path>
+                  </svg>
+                </div>
+                <div className="ws-options-text mobile-option">All Links</div>
+              </div>
+              <div
+                style={{ marginLeft: "30px" }}
+                className="ws-options pointer"
+                onClick={() => navigate("/contact")}
+              >
+                <div className="ws-options-icon">
+                  <svg
+                    className="icon"
+                    stroke="currentColor"
+                    fill="currentColor"
+                    strokeWidth="0"
+                    viewBox="0 0 24 24"
+                    height="1.3em"
+                    width="1.3em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g>
+                      <path fill="none" d="M0 0h24v24H0z"></path>
+                      <path d="M8 12h2v2H4v-2h2a6 6 0 1 1 6 6v-2a4 4 0 1 0-4-4zm-2 8h9v2H6v-2zm-4-4h8v2H2v-2zm9-15h2v3h-2V1zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3z"></path>
+                    </g>
+                  </svg>
+                </div>
+                {/* <div className="ws-options-text">Help</div> */}
+              </div>
+              <div className="ws-options pointer" onClick={() => setSection(3)}>
+                <div className="ws-options-icon">
+                  <svg
+                    className="icon"
+                    stroke="currentColor"
+                    fill="currentColor"
+                    strokeWidth="0"
+                    viewBox="0 0 24 24"
+                    height="1.2em"
+                    width="1.2em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M16,2H8C4.691,2,2,4.691,2,8v13c0,0.553,0.447,1,1,1h13c3.309,0,6-2.691,6-6V8C22,4.691,19.309,2,16,2z M20,16 c0,2.206-1.794,4-4,4H4V8c0-2.206,1.794-4,4-4h8c2.206,0,4,1.794,4,4V16z"></path>
+                    <path d="M11 6H13V14H11zM11 16H13V18H11z"></path>
+                  </svg>
+                </div>
+                {/* <div className="ws-options-text">Report an issue</div> */}
+              </div>
+              <div
+                className="ws-options pointer"
+                onClick={() => setCollVis(!collVis)}
+              >
+                <div className="ws-options-icon">
+                  <svg
+                    className="icon"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeWidth="0"
+                    viewBox="0 0 24 24"
+                    height="1.2em"
+                    width="1.2em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                    ></path>
+                  </svg>
+                </div>
+                {/* <div className="ws-options-text">Report an issue</div> */}
+              </div>
+
+              <div className="ws-options pointer">
+                <div className="ws-options-icon">
+                  <svg
+                    className="ws-options hide-message"
+                    stroke="#1b72e8"
+                    fill="#1b72e8"
+                    strokeWidth="0"
+                    viewBox="0 0 24 24"
+                    height="1.3em"
+                    width="1.3em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M16,2H8C4.691,2,2,4.691,2,8v12c0,0.552,0.447,1,1,1h13c3.309,0,6-2.691,6-6V8C22,4.691,19.309,2,16,2z M20,15 c0,2.206-1.794,4-4,4H4V8c0-2.206,1.794-4,4-4h8c2.206,0,4,1.794,4,4V15z"></path>
+                    <circle cx="9.5" cy="11.5" r="1.5"></circle>
+                    <circle cx="14.5" cy="11.5" r="1.5"></circle>
+                  </svg>
+                </div>
+                {/* <div className="ws-options-text">Report an issue</div> */}
+              </div>
+            </div>
+          </Slide>
+
+          <Fade duration={1000} triggerOnce>
+            {collVis ? (
+              <>
+                <div className="wsd-collaborator-label">
+                  <div className="wsd-collaborator-list">
+                    {collaborators
+                      ? collaborators.map((c, key) => {
+                          console.log(c.url, "AVATAR");
+                          return (
+                            <div>
+                              <Avatar img={c.url} />
+                            </div>
+                          );
+                        })
+                      : null}
+                  </div>
+                  <div className="wsd-collaborator-create">
+                    <input
+                      className="input ipt"
+                      type="text"
+                      name="title"
+                      placeholder="Enter email"
+                      // onChange={handleChange}
+                    />
+                    <button className="create-ws-btn pointer">
+                      Add Collaborator
+                    </button>
+                  </div>{" "}
+                </div>
+              </>
+            ) : null}
+          </Fade>
+
+          <div className="wsd-dash-top">
+            <Fade duration={2000}>
+              <div className="wsd-dash-sec-title-wrapper">
+                <p className="wsd-dash-sec-title"> All notes</p>
+                <div className="wsd-dash-addnote-wrapper">
+                  <input
+                    className="input"
+                    type="text"
+                    name="title"
+                    placeholder="Enter new note title"
+                    // onChange={handleChange}
+                  />
+                  <button className="create-ws-btn pointer">
+                    <span>Create Note</span>
+                  </button>
+                </div>
+              </div>
+
+              <div className="wsd-dash-banner-2">
+                {notes ? (
+                  <small className="wsd-note-count">{notes.length} notes</small>
+                ) : (
+                  "Fetching notes.."
+                )}
+              </div>
+              <div className="wsd-note-disp-wrapper-2">
+                {notes
+                  ? notes.map((n, key) => {
+                      return (
+                        <div key={key.toString()}>
+                          <NoteDisp note={n} />
+                        </div>
+                      );
+                    })
+                  : null}
+              </div>
+            </Fade>
+          </div>
+        </div>
+
+        <Slide direction={"right"} duration={2000}>
+          <div className="wsd-container-right">
+            {/* !CHAT BANNER 1 */}
+            <div className="chat-banner-1">
+              <div className="chat-banner-1-left">
+                <p className="chat-title pointer">Flint Messages</p>
+                <small>Chat with your collaborators on the fly!</small>
+              </div>
+              <div className="chat-title-owner-avatar">
+                <Avatar img={authContext.user.link} />
+              </div>
+            </div>
+
+            {/* !CHAT COLLABORATORS LISTS */}
+
+            <div className="chat-banner-2">
+              {collaborators
+                ? collaborators.map((t, key) => {
+                    return (
+                      <div key={key.toString()}>
+                        <Avatar img={t.url} />
+                      </div>
+                    );
+                  })
+                : null}
+            </div>
+
+            <div className="chat-wrapper">
+              {messages
+                ? messages.map((message, key) => {
+                    return (
+                      <div key={key.toString()}>
+                        <MessageDisp message={message} color={"secondary"} />
+                      </div>
+                    );
+                  })
+                : null}
+            </div>
+
+            <div className="chat-new-message-wrapper">
+              <svg
+                stroke="currentColor"
+                fill="currentColor"
+                strokeWidth="0"
+                viewBox="0 0 24 24"
+                height="1.5em"
+                width="1.5em"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M20,4H6C4.897,4,4,4.897,4,6v5h2V8l6.4,4.8c0.178,0.133,0.389,0.2,0.6,0.2s0.422-0.067,0.6-0.2L20,8v9h-8v2h8 c1.103,0,2-0.897,2-2V6C22,4.897,21.103,4,20,4z M13,10.75L6.666,6h12.668L13,10.75z"></path>
+                <path d="M2 12H9V14H2zM4 15H10V17H4zM7 18H11V20H7z"></path>
+              </svg>
+              <input
+                className="msg-input"
+                name="new-msg"
+                placeholder="New Messagsse"
+              ></input>
+            </div>
+          </div>
+        </Slide>
+      </div>
+    </div>
+  );
+};
+
+export default WorkspaceDisplay;
+
+{
+  /* <div className="wsd-wrapper">
+      <div className="wsd-left">
+        <div className="ws-banner">
+          {workspace ? <p className="ws-name">{workspace.title}</p> : null}
+
+          <div className="ws-add-collaborators">
+            <input
+              type="text"
+              className="input"
+              name="email"
+              placeholder="Enter email"
+            />
+            <button onClick={addCollaborator} className="create-ws-btn pointer">
+              Add collaborator
+            </button>
+          </div>
+        </div>
+
+        <div className="ws-banner-1">
+          {collaborators ? (
+            <div className="wsd-collaborators-list">
+              {collaborators.map((t, key) => {
+                return (
+                  <div key={key.toString()}>
+                    <Avatar img={A_ONE} />
+                  </div>
+                );
+              })}
+            </div>
+          ) : null}
+        </div>
+
+        <div className="wsd-containers">
+          <div className="wsd-container-left">
+            <p className="wsd-sec-title"> All notes</p>
+            <div className="wsd-notes-wrapper">
+              {notes
+                ? notes.map((n, key) => {
+                    return (
+                      <div key={key.toString()}>
+                        <NoteDisp note={n} />
+                      </div>
+                    );
+                  })
+                : null}
+            </div>
+          </div>
+          <div className="wsd-container-right">
+            <p className="wsd-sec-title">All todo</p>
+            {todo
+              ? todo.map((t, key) => {
+                  return <div key={key.toString()}>{t.task}</div>;
+                })
+              : null}
+          </div>
+        </div>
+      </div>
+      <div className="wsd-right">
+        <div className="wsd-discussion-banner">
+          <p className="wsd-disc-header">Flint Messages</p>
+          <svg
+            className="icon pointer disc-icon-menu"
+            stroke="currentColor"
+            fill="none"
+            strokeWidth="0"
+            viewBox="0 0 24 24"
+            height="1.5em"
+            width="1.5em"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M8 6C8 7.10457 7.10457 8 6 8C4.89543 8 4 7.10457 4 6C4 4.89543 4.89543 4 6 4C7.10457 4 8 4.89543 8 6Z"
+              fill="currentColor"
+            ></path>
+            <path
+              d="M8 12C8 13.1046 7.10457 14 6 14C4.89543 14 4 13.1046 4 12C4 10.8954 4.89543 10 6 10C7.10457 10 8 10.8954 8 12Z"
+              fill="currentColor"
+            ></path>
+            <path
+              d="M6 20C7.10457 20 8 19.1046 8 18C8 16.8954 7.10457 16 6 16C4.89543 16 4 16.8954 4 18C4 19.1046 4.89543 20 6 20Z"
+              fill="currentColor"
+            ></path>
+            <path
+              d="M14 6C14 7.10457 13.1046 8 12 8C10.8954 8 10 7.10457 10 6C10 4.89543 10.8954 4 12 4C13.1046 4 14 4.89543 14 6Z"
+              fill="currentColor"
+            ></path>
+            <path
+              d="M12 14C13.1046 14 14 13.1046 14 12C14 10.8954 13.1046 10 12 10C10.8954 10 10 10.8954 10 12C10 13.1046 10.8954 14 12 14Z"
+              fill="currentColor"
+            ></path>
+            <path
+              d="M14 18C14 19.1046 13.1046 20 12 20C10.8954 20 10 19.1046 10 18C10 16.8954 10.8954 16 12 16C13.1046 16 14 16.8954 14 18Z"
+              fill="currentColor"
+            ></path>
+            <path
+              d="M18 8C19.1046 8 20 7.10457 20 6C20 4.89543 19.1046 4 18 4C16.8954 4 16 4.89543 16 6C16 7.10457 16.8954 8 18 8Z"
+              fill="currentColor"
+            ></path>
+            <path
+              d="M20 12C20 13.1046 19.1046 14 18 14C16.8954 14 16 13.1046 16 12C16 10.8954 16.8954 10 18 10C19.1046 10 20 10.8954 20 12Z"
+              fill="currentColor"
+            ></path>
+            <path
+              d="M18 20C19.1046 20 20 19.1046 20 18C20 16.8954 19.1046 16 18 16C16.8954 16 16 16.8954 16 18C16 19.1046 16.8954 20 18 20Z"
+              fill="currentColor"
+            ></path>
+          </svg>
+        </div>
+        <div>
+          <p className="disc-tag">Chat with workspace collaborators</p>
+        </div>
+
+        <div className="collaborators-disp-wrapper">
+          {collaborators ? (
+            <p>{collaborators.length} collaborators</p>
+          ) : (
+            "getting collaborators..."
+          )}
+        </div>
+        <dic className="chat-wrapper">
+          {messages
+            ? messages.map((message, key) => {
+                return (
+                  <div key={key.toString()}>
+                    <MessageDisp message={message} />
+                  </div>
+                );
+              })
+            : null}
+        </dic>
+      </div>
+    </div> */
+}

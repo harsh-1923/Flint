@@ -1,0 +1,25 @@
+.navbar-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 10px 10%;
+  height: 70px;
+  min-width: 100%;
+
+  position: Sticky;
+  top: 0;
+  z-index: 1000;
+
+  background: rgba(255, 255, 255, 0.826);
+  box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.271);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.navbar-logo {
+  font-size: 30px;
+  color: var(--main);
+  font-weight: 500;
+  transition: all 0.9s;
+}
