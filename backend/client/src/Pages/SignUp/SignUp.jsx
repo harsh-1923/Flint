@@ -50,7 +50,7 @@ const SignUp = () => {
     <div className="signup-wrapper">
       <GoogleLogin
         className="google-login"
-        clientId="606956174420-153c7ckvubq4jlmeh2orqqorvpqn2q1t.apps.googleusercontent.com"
+        clientId="475369169265-k0v6g1q8eu63ebgorprqovppcd3do3tq.apps.googleusercontent.com"
         buttonText="Login with Google"
         onSuccess={responseGoogle}
         onFailure={responseErrorGoogle}
