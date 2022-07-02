@@ -134,7 +134,7 @@ exports.getAllMessages = (req, res) => {
 };
 
 exports.getAllWorkSpaces = (req, res) => {
-  // console.log("here");
+  console.log("here");
   // console.log(req.body);
   const { email } = req.body;
 
