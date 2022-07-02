@@ -150,9 +150,9 @@
   border-radius: 5px;
 }
 
-.ws-options:hover {
+/* .ws-options:hover {
   background-color: var(--accent);
-}
+} */
 
 .ws-options-icon {
   margin-right: 5px;
