@@ -28,6 +28,11 @@ app.use("/api/todos", toDoRouter);
 const linkRouter = require("./routes/LinkRoutes.js");
 app.use("/api/link", linkRouter);
 
+app.use('/api/payments', require('./routes/payments'));
+
+
+
+
 mongoose
   .connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB connected, connected"))
