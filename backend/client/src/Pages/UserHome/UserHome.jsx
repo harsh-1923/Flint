@@ -503,7 +503,7 @@ const UserHome = () => {
               <div className="ws-options-text mobile-text">Report an issue</div>
             </div>
           </div>
-          {section == 0 ? (
+          {section === 0 ? (
             <>
               <div className="banner-2">
                 <div className="user-avatar-list pointer">
@@ -553,12 +553,12 @@ const UserHome = () => {
                             <WorkspaceCards workspace={ws} />
                           </div>
                         );
-                      })
+                      }).reverse()
                     : null}
                 </div>
               </div>
             </>
-          ) : section == 1 ? (
+          ) : section === 1 ? (
             <div className="link-wrapper">
               <p className="link-wrapper-title">Notes</p>
               <div className="userhome-note-display-wrapper">
@@ -573,7 +573,7 @@ const UserHome = () => {
                   : null}
               </div>
             </div>
-          ) : section == 2 ? (
+          ) : section ===2 ? (
             <div className="task-wrapper">
               <p className="link-wrapper-title">All Tasks</p>
               {todo
