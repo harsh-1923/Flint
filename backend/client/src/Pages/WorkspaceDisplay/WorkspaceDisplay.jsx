@@ -8,6 +8,7 @@ import MessageDisp from "../../Components/MessageDisp/MessageDisp";
 
 import Avatar from "../../Components/Avatar/Avatar.jsx";
 import A_ONE from "../../assets/A_ONE.png";
+import IMG_1 from "../../assets/IMG_1.png";
 
 import { AuthContext } from "../../Context/AuthContext.js";
 import NoteDisp from "../../Components//NoteDisp/NoteDisp.jsx";
@@ -30,6 +31,7 @@ const WorkspaceDisplay = () => {
   const [collVis, setCollVis] = useState(false);
 
   const [section, setSection] = useState(0);
+  const [msgSec, setMsgSec] = useState(true);
 
   useEffect(() => {
     getAllNotes();
@@ -521,6 +523,9 @@ const WorkspaceDisplay = () => {
               <div className="ws-options pointer">
                 <div className="ws-options-icon">
                   <svg
+                    onClick={() => {
+                      setMsgSec(!msgSec);
+                    }}
                     className="ws-options hide-message"
                     stroke="#1b72e8"
                     fill="#1b72e8"
@@ -614,64 +619,111 @@ const WorkspaceDisplay = () => {
         </div>
 
         <Slide direction={"right"} duration={2000}>
-          <div className="wsd-container-right">
-            {/* !CHAT BANNER 1 */}
-            <div className="chat-banner-1">
-              <div className="chat-banner-1-left">
-                <p className="chat-title pointer">Flint Messages</p>
-                <small>Chat with your collaborators on the fly!</small>
-              </div>
-              <div className="chat-title-owner-avatar">
-                <Avatar img={authContext.user.link} />
-              </div>
-            </div>
+          {msgSec ? (
+            <div>
+              {authContext.user.p != false ? (
+                <div className="wsd-container-right-2">
+                  <div className="wsd-container-right-2-sec-1">
+                    <h1 className="wsd-continer-right-2-title">
+                      Flint Messages
+                    </h1>
+                    <p>Chat with collaborators on the fly!!</p>
+                  </div>
+                  <img className="wsd-container-right-2-img" src={IMG_1} />
+                  <div className="wsd-container-right-2-sec-3">
+                    <h1 className="wsd-container-right-2-sec-3-title">
+                      Increase your productivity with Flint Essential Features
+                    </h1>
+                    <div>
+                      <strong className="wsd-container-right-2-tag">
+                        Flint Essential Includes
+                      </strong>
+                      <p>Premium Collaborative Features</p>
+                      <p>Flint Messages</p>
+                    </div>
 
-            {/* !CHAT COLLABORATORS LISTS */}
-
-            <div className="chat-banner-2">
-              {collaborators
-                ? collaborators.map((t, key) => {
-                    return (
-                      <div key={key.toString()}>
-                        <Avatar img={t.url} />
+                    <button className="wsd-container-right-2-btn">
+                      Get Flint Premium
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="wsd-container-right">
+                  <div className="wsd-container-chat-banner-wrapper">
+                    <div className="wsd-container-chat-banner-1">
+                      <div className="wsd-container-chat-banner-1-sec-1">
+                        <svg
+                          onClick={() => {
+                            setMsgSec(!msgSec);
+                          }}
+                          className="icon chat-back-icon pointer"
+                          stroke="white"
+                          fill="white"
+                          stroke-width="0"
+                          viewBox="0 0 24 24"
+                          height="1em"
+                          width="1em"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M21 11L6.414 11 11.707 5.707 10.293 4.293 2.586 12 10.293 19.707 11.707 18.293 6.414 13 21 13z"></path>
+                        </svg>
+                        <div className="wsd-container-chat-title">
+                          <h1 className="wsd-chat-title">Flint Messages</h1>
+                          {/* <small>Chat with collaborators on the fly!</small> */}
+                        </div>
                       </div>
-                    );
-                  })
-                : null}
-            </div>
 
-            <div className="chat-wrapper">
-              {messages
-                ? messages.map((message, key) => {
-                    return (
-                      <div key={key.toString()}>
-                        <MessageDisp message={message} color={"secondary"} />
-                      </div>
-                    );
-                  })
-                : null}
-            </div>
+                      {authContext.user ? (
+                        <Avatar img={authContext.user.link} />
+                      ) : (
+                        <Avatar />
+                      )}
+                    </div>
+                  </div>
+                  <div className="wsd-container-chat-banner-2">
+                    <div className="chat-wrapper-new">
+                      {messages
+                        ? messages.map((message, key) => {
+                            return (
+                              <div key={key.toString()}>
+                                <MessageDisp
+                                  message={message}
+                                  user={authContext.user.email}
+                                />
+                              </div>
+                            );
+                          })
+                        : null}
+                    </div>
+                  </div>
 
-            <div className="chat-new-message-wrapper">
-              <svg
-                stroke="currentColor"
-                fill="currentColor"
-                strokeWidth="0"
-                viewBox="0 0 24 24"
-                height="1.5em"
-                width="1.5em"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M20,4H6C4.897,4,4,4.897,4,6v5h2V8l6.4,4.8c0.178,0.133,0.389,0.2,0.6,0.2s0.422-0.067,0.6-0.2L20,8v9h-8v2h8 c1.103,0,2-0.897,2-2V6C22,4.897,21.103,4,20,4z M13,10.75L6.666,6h12.668L13,10.75z"></path>
-                <path d="M2 12H9V14H2zM4 15H10V17H4zM7 18H11V20H7z"></path>
-              </svg>
-              <input
-                className="msg-input"
-                name="new-msg"
-                placeholder="New Messagsse"
-              ></input>
+                  <div className="wsd-container-chat-banner-3">
+                    <input
+                      type="text"
+                      className="chat-message-input"
+                      placeholder="Type a message"
+                      // value
+                    />
+                    <svg
+                      className="icon chat-send-icon pointer"
+                      stroke="white"
+                      fill="none"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      height="1.3em"
+                      width="1.3em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <line x1="22" y1="2" x2="11" y2="13"></line>
+                      <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
+          ) : null}
         </Slide>
       </div>
     </div>
@@ -814,3 +866,60 @@ export default WorkspaceDisplay;
       </div>
     </div> */
 }
+
+// {/* !CHAT BANNER 1 */}
+// <div className="chat-banner-1">
+// <div className="chat-banner-1-left">
+//   <p className="chat-title pointer">Flint Messages</p>
+//   <small>Chat with your collaborators on the fly!</small>
+// </div>
+// <div className="chat-title-owner-avatar">
+//   <Avatar img={authContext.user.link} />
+// </div>
+// </div>
+
+// {/* !CHAT COLLABORATORS LISTS */}
+
+// <div className="chat-banner-2">
+// {collaborators
+//   ? collaborators.map((t, key) => {
+//       return (
+//         <div key={key.toString()}>
+//           <Avatar img={t.url} />
+//         </div>
+//       );
+//     })
+//   : null}
+// </div>
+
+// <div className="chat-wrapper">
+// {messages
+//   ? messages.map((message, key) => {
+//       return (
+//         <div key={key.toString()}>
+//           <MessageDisp message={message} color={"secondary"} />
+//         </div>
+//       );
+//     })
+//   : null}
+// </div>
+
+// <div className="chat-new-message-wrapper">
+// <svg
+//   stroke="currentColor"
+//   fill="currentColor"
+//   strokeWidth="0"
+//   viewBox="0 0 24 24"
+//   height="1.5em"
+//   width="1.5em"
+//   xmlns="http://www.w3.org/2000/svg"
+// >
+//   <path d="M20,4H6C4.897,4,4,4.897,4,6v5h2V8l6.4,4.8c0.178,0.133,0.389,0.2,0.6,0.2s0.422-0.067,0.6-0.2L20,8v9h-8v2h8 c1.103,0,2-0.897,2-2V6C22,4.897,21.103,4,20,4z M13,10.75L6.666,6h12.668L13,10.75z"></path>
+//   <path d="M2 12H9V14H2zM4 15H10V17H4zM7 18H11V20H7z"></path>
+// </svg>
+// <input
+//   className="msg-input"
+//   name="new-msg"
+//   placeholder="New Messagsse"
+// ></input>
+// </div>
